@@ -52,7 +52,7 @@ jobs:
           repository: 1979447992/project-gitops-config
           token: ${{ secrets.GITOPS_TOKEN }} # Note: A PAT with repo scope is required
           path: project-gitops-config
-          ref: ${{ steps.meta.outputs.BRANCH_NAME == 'dev' && 'develop' || 'sit' }}
+          ref: ${{ steps.meta.outputs.BRANCH_NAME == 'dev' && 'dev' || 'sit' }}
 
       - name: Update GitOps repository
         run: |
