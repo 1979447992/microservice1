@@ -4,7 +4,7 @@ permissions:
   packages: write
 on:
   push:
-    branches: [ "dev", "staging" ]
+    branches: [ "dev", "sit" ]
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: microservice1
@@ -31,8 +31,10 @@ jobs:
       - name: Generate version
         id: meta
         run: |
-          VERSION=dev-$(git rev-parse --short HEAD)
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          VERSION=${BRANCH_NAME}-$(git rev-parse --short HEAD)
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_OUTPUT
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -50,11 +52,14 @@ jobs:
           repository: 1979447992/project-gitops-config
           token: ${{ secrets.GITOPS_TOKEN }} # Note: A PAT with repo scope is required
           path: project-gitops-config
+          ref: ${{ steps.meta.outputs.BRANCH_NAME == 'dev' && 'develop' || 'sit' }}
 
       - name: Update GitOps repository
         run: |
           cd project-gitops-config
-          yq -i ".image.tag = \"dev-$(echo $GITHUB_SHA | cut -c1-7)\"" environments/dev/microservice1-values.yaml
+          BRANCH_NAME=${{ steps.meta.outputs.BRANCH_NAME }}
+          ENV_PATH="environments/${BRANCH_NAME}/microservice1-values.yaml"
+          yq -i ".image.tag = \"${{ steps.meta.outputs.VERSION }}\"" $ENV_PATH
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git commit -am "Update image tag for microservice1 to ${{ steps.meta.outputs.VERSION }}"
