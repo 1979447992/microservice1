@@ -7,10 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Value;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SpringBootApplication
 @RestController
 public class Application {
+    
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     @Value("${app.environment:UNKNOWN}")
     private String environment;
@@ -33,11 +37,18 @@ public class Application {
     public String hello() {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                return "Hello from Microservice 111 - DEV环境自动部署测试 v7.001666 - ArgoCD Test - Current Time: " + now.format(formatter) + " (ENV: " + environment.toUpperCase() + ")";
+        String response = "Hello from Microservice 111 - DEV环境自动部署测试 v7.001666 - ArgoCD Test - Current Time: " + now.format(formatter) + " (ENV: " + environment.toUpperCase() + ")";
+        
+        logger.info("🚀 Main endpoint accessed - Environment: {}, Timestamp: {}", environment.toUpperCase(), now.format(formatter));
+        logger.info("📊 Request processed successfully for main endpoint");
+        
+        return response;
     }
     
     @GetMapping("/health")
     public String health() {
+        logger.info("🏥 Health endpoint accessed - Environment: {}", environment);
+        logger.info("✅ Health check completed successfully");
         return "{\"status\":\"UP\",\"version\":\"6.0\",\"environment\":\"" + environment + "\",\"timestamp\":\"" + LocalDateTime.now() + "\"}";
     }
 }
