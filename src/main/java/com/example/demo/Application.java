@@ -37,9 +37,9 @@ public class Application {
     public String hello() {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String response = "Hello from Microservice 111 - DEV环境自动部署测试 v7.001666 - ArgoCD Test - Current Time: " + now.format(formatter) + " (ENV: " + environment.toUpperCase() + ")";
+        String response = "Hello from Microservice 111 - DEV环境自动部署测试 v7.0016661 - ArgoCD Test - Current Time: " + now.format(formatter) + " (ENV: " + environment.toUpperCase() + ")";
         
-        logger.info("🚀 Main endpoint accessed - Environment: {}, Timestamp: {}", environment.toUpperCase(), now.format(formatter));
+        logger.info("🚀 Main endpoint accessed - Environment: {}, Timestamp: {}", environment.toUpperCase(),  now.format(formatter));
         logger.info("📊 Request processed successfully for main endpoint");
         
         return response;
