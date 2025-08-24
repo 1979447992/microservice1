@@ -62,5 +62,6 @@ jobs:
           yq -i ".image.tag = \"${{ steps.meta.outputs.VERSION }}\"" $ENV_PATH
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am "Update image tag for microservice1 to ${{ steps.meta.outputs.VERSION }}"
-          git push
+          git add $ENV_PATH
+          git commit -m "Update image tag for microservice1 to ${{ steps.meta.outputs.VERSION }}"
+          git push origin $BRANCH_NAME
